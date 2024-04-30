@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unselphish</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Geo&display=swap">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Sarpanch&display=swap">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body style="background-image: url('static/bg.png');">
+    <header class="header">
+        <div style="display: flex; justify-content: space-between; align-items: center; ">
+            <!-- Placeholder for your logo -->
+            <img src="static/logo.png" alt="Logo" style="width: 100px; height: 100px;">
+            <p></p>
+            <h1 style="font-family: 'Geo'; color: white;">Unselphish</h1>
+        </div>
+        <div class="menu-content">
+            <!-- Hyperlinks to other pages -->
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/how_to_use">How To Use</a>
+            <a href="/credits">Credits</a>
+            <a href="/license">License</a>
+            <a href="/leaderboard">Leaderboard</a>
+        </div>
+    </header>
+    <!--div class="graphics">
+        <h1 style="font-size: 48px; color: aliceblue;">Unselphish</h1>
+        <p style="font-size: 24px; color: #666;">Tagline</p>
+    </div-->
+    <div class="gap"></div>
+    <div class="main">
+        <h2>Scan Link</h2>
+        <form action="/scan_link" method="post">
+            <input class="fileinput" type="text" name="scan_link" required>
+            <input class="submitbutton" type="submit" value="Submit">
+        </form>
+
+        <h2>Scan Singular Message</h2>
+        <form action="/scan_singular_message" method="post">
+            <input class="fileinput" type="text" name="scan_message" required>
+            <input type="submit" value="Submit" class="submitbutton">
+        </form>
+
+        <h2>Threat Report From WhatsApp Chat (include author's name)</h2>
+        <form action="/scan_whatsapp" method="post" enctype="multipart/form-data">
+            <input class="fileinput" type="file" name="whatsapp_report" required>
+            <input class="fileinput" type="text" name="author" required>
+            <input class="submitbutton" type="submit" value="Upload">
+        </form>
+
+        <h2>Threat Report from Email (.eml)</h2>
+        <form action="/scan_email" method="post" enctype="multipart/form-data">
+            <input class="fileinput" type="file" name="email_report" required>
+            <input class="submitbutton" type="submit" value="Upload">
+        </form>
+
+        <h2>Scan File</h2>
+        <form action="/scan_file" method="post" enctype="multipart/form-data">
+            <input class="fileinput" type="file" name="scan_file" required>
+            <input class="submitbutton" type="submit" value="Upload">
+        </form>
+    </div>
+
+    <div class="gap">
+    </div>
+</body>
+</html>

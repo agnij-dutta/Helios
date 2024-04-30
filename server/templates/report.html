@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Helios</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Geo&display=swap">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Sarpanch&display=swap">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='report.css') }}">
+    <script>
+
+        setTimeout(function () {
+            window.location.href = '{{ redirect_url }}';
+        }, 10000);  
+        
+      </script>
+</head>
+<body style="background-image: url('static/bg.png');">
+        <div class="menu-content">
+        </div>
+    </header>
+    <div class="gap">
+    </div>
+    <div class="outputwindow">
+        <img class="graphics" src="{{ url_for('static', filename='qr_code.png') }}">
+    </div>
+    <div class="gap">
+    </div>
+</body>
+</html>

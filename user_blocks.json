@@ -1,0 +1,15 @@
+{
+    "user_blocks": {
+      "user1": {"name":"admin",
+      "index": 0,
+      "id": "RS005343",
+      "rank": "administrator",
+      "timestamp":"2023-03-19 21:24:18.183179",
+      "tokens": "[]",
+      "nonce": 738766,
+      "previous_hash": "0",
+      "hash":"00000c409af5bd5dbacadd1c958fce0e1a82aadff72811e94a443a479fab8a9d",
+      "data":""
+    }
+  }
+}

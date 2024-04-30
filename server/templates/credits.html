@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Helios</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Geo&display=swap">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Sarpanch&display=swap">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='other.css') }}">
+    <style>
+        body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+          background-color: #242424;
+          font-family: 'Geo';
+        }
+        
+        .loading-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+        }
+        
+        .loading-text {
+          font-size: 5em;
+          font-weight: bold;
+          text-transform: uppercase;
+          color: white;
+        }
+        
+        .loading-animation {
+          display: flex;
+          align-items: center;
+        }
+        
+        .dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background-color: #cecece;
+          animation: pulse 1.5s infinite;
+          margin: 0 4px;
+        }
+        
+        @keyframes pulse {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 0.3;
+          }
+          50% {
+            transform: scale(1.5);
+            opacity: 1;
+          }
+        }
+      </style>
+      <!-- <script>
+
+        setTimeout(function () {
+            window.location.href = '{{ redirect_url }}';
+        }, 5);  
+        
+      </script> -->
+</head>
+<body style="background-image: url('static/bg.png');">
+    <header class="header">
+        <div>
+
+        </div>
+        <div class="menu-content">
+            <p>
+                WELCOME TO HELIOS     ---    BY Agnij Dutta
+            </p>
+        </div>
+    </header>
+    <div class="gap"></div>
+    <div class="main">
+        <h2>Check-In</h2>
+        <form action="/load" method="post">
+            <input class="submitbutton" type="submit" value="Submit">
+        </form>
+    </div>
+<!-- 
+    <div class="gap"></div>
+    <div class="loading-animation">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div> -->
+</body>
+</html>

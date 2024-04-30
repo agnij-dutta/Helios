@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Geo&display=swap">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helios</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #242424;
+    font-family: 'Geo';
+  }
+  
+  .loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  
+  .loading-text {
+    font-size: 5em;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+  }
+  
+  .loading-animation {
+    display: flex;
+    align-items: center;
+  }
+  
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #cecece;
+    animation: pulse 1.5s infinite;
+    margin: 0 4px;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.3;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 1;
+    }
+  }
+</style>
+<script>
+
+  setTimeout(function () {
+      window.location.href = '{{ redirect_url }}';
+  }, 7);  
+</script>
+</head>
+<body>
+  <div class="loading-container">
+    <div class="loading-text">
+      Adding Records
+    </div>
+    <div class="loading-animation">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+</body>
+</html>

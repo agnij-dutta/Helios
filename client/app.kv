@@ -1,0 +1,18 @@
+<MainScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Welcome to Helios'
+        Button: 
+            text: 'Scan Code'
+            on_release: app.root.current = 'scanner'
+
+<ScannerScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        Camera: 
+            id: Camera
+            resolution: (640, 480)
+        Label:
+            text: 'Scan Code'
+            
