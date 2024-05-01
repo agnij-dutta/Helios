@@ -54,7 +54,7 @@ class Coin:
     def validate_block(self, difficulty):
         target = '0' * difficulty
         return self.hash[:difficulty] == target
-    
+
 
 
 #Child class 1: Handles transanctions 
@@ -66,7 +66,7 @@ class TCoin(Coin):
         self.name = name
         self.previous_hash = previous_hash
         self.data = data
-        super().__init__(index, timestamp, previous_hash, self.data)
+        super().__init__(index, timestamp, previous_hash)
 
     def to_dict(self):
         return {
@@ -78,7 +78,7 @@ class TCoin(Coin):
             'nonce': self.nonce,
             'hash': self.hash
         }
-    
+
 
 
 #Child class 2: Handles users as blocks
@@ -90,10 +90,11 @@ class UserBlock:
         self.id = id
         self.rank = rank
         self.nonce = 0
-        self.tokens = tokens
+        self.tokens = str(tokens)
         self.data = data
         self.timestamp = timestamp
         self.previous_hash = previous_hash
+        self.ref_id = None
 
         self.calculate_hash()
 
@@ -101,6 +102,8 @@ class UserBlock:
         return {
             'name': self.name,
             'data': self.data,
+            'id': self.id,
+            'rank': self.rank,
             'index': self.index,
             'tokens': self.tokens,
             'timestamp': self.timestamp,
@@ -126,7 +129,7 @@ class UserBlock:
     def validate_block(self, difficulty):
         target = '0' * difficulty
         return self.hash[:difficulty] == target
-        
+
 
 
 # Define the Users Blockchain class
@@ -135,21 +138,22 @@ class Wallet:
     def __init__(self, difficulty=2):
         self.difficulty = difficulty
         self.user_ids = []
-        # self.user_chain = self.load_chain()
-        self.user_chain = []
-        # if len(self.user_chain) == 0:
-        #     self.create_genesis()
+        self.user_chain = self.load_chain()
+        # self.user_chain = []
+        if len(self.user_chain) == 0:
+            print("creating genesis block")
+            self.create_genesis()
+        else:
+            pass
+
         if not self.validate_chain():
             pass
+
         if len(self.user_chain) > 216:
             difficulty += 1
 
         self.current_block = None
 
-        # for i in range(10):
-        #     global thread
-        #     thread = threading.Thread(target=self.create_wallet)
-        #     thread.start()
 
         # if not thread.is_alive():
         #     print("created 10 wallets")
@@ -186,7 +190,9 @@ class Wallet:
                 block.hash = block_data['hash']
                 block.nonce = block_data['nonce']
                 user_chain.append(block)
-                print("chain loaded")
+                block.ref_id = user_id
+
+           print("chain loaded")
         else:
             print("load failed")
             return user_chain
@@ -200,8 +206,8 @@ class Wallet:
         id = "AAA-000"
         block = UserBlock(id=id, index=index, rank="administrator", timestamp=str(timestamp), previous_hash="0", tokens=[], name="Admin", data="")
         block.mine_hash(self.difficulty)
-        self.user_chain.append(block.to_dict())
-        db_ref.child("user_blocks").push(block.to_dict())
+        self.user_chain.append(block)
+        db_ref.child('user_blocks').push(block.to_dict())
 
     
     def create_wallet(self):
@@ -222,14 +228,16 @@ class Wallet:
             block = UserBlock(id=id, index=0, rank="", timestamp=str(timestamp), previous_hash="0", tokens=[], name="", data="")
         
         block.mine_hash(self.difficulty)
-        self.user_chain.append(block.to_dict())
-        if self.validate_chain():
-            db_ref.child("user_blocks").push(block.to_dict())
+        # self.user_chain.append(block)
+        # if self.validate_chain():
+        #     db_ref.child("user_blocks").push(block.to_dict())
             
-        else:
-            print("Cannot add block")
+        # else:
+        #     print("Cannot add block")
+        return block
 
     def add_user(self, name, rank, data, key):
+        self.load_chain()
         self.validate_chain()
         for user in self.user_chain:
             if len(user.name) == 0:
@@ -241,8 +249,7 @@ class Wallet:
                 if self.validate_chain():
                     self.current_block = user
                     self.update_chain(key=key)
-                    print(user)
-                    break
+                    return user.id
                 else:
                     print("Failed to add user wallet")
                 return
@@ -287,6 +294,7 @@ class Wallet:
         return chain_data
     
     def validate_chain(self):
+        self.load_chain()
         previous_hash = None
         for block in self.user_chain:
             if not block.validate_block(self.difficulty):
@@ -300,24 +308,24 @@ class Wallet:
         return True
 
     def update_chain(self, key):
+       
        db_ref = db.reference('user_blocks')
        if self.current_block != None:
-        if self.current_block.name in self.used_names:
-            user_id = self.used_names[self.current_block.name][-1]  
+        user_id = self.current_block.ref_id  
 
-            # Encrypting the current data
-            encrypted_dict = AES.encrypt(json.dumps(self.current_block.data), key)
-            encrypted_dict = base64.b64encode(encrypted_dict).decode()
+        # Encrypting the current data
+        encrypted_dict = AES.encrypt(json.dumps(self.current_block.data), key)
+        encrypted_dict = base64.b64encode(encrypted_dict).decode()
 
-            self.current_block.data = encrypted_dict
-            self.chain[self.current_block.index] = self.current_block
+        self.current_block.data = encrypted_dict
+        self.user_chain[self.current_block.index] = self.current_block
 
-            if self.validate_chain():
-                block_dict = self.current_block.to_dict()
-                db_ref.child(user_id).set(block_dict)
-                print('done')
-            else:
-                print('not done')
+        if self.validate_chain():
+            block_dict = self.current_block.to_dict()
+            db_ref.child(user_id).set(block_dict)
+            print('done')
+        else:
+            print('not done')
 
 
 
@@ -343,7 +351,7 @@ class TBlockchain:
                 print('yes')
                 for token in eval(user.tokens):
                     Tchain.append(token)
-                Tchain = sorted(Tchain, key=lambda b:b.index)
+                # Tchain = sorted(Tchain, key=lambda b:b.index)
                 self.Tchain = Tchain
                 return Tchain
             else:
@@ -359,13 +367,13 @@ class TBlockchain:
                     return False
                 # check if the previous_hash of the current block is the hash of the previous block
                 if previous_hash is not None and token.previous_hash != previous_hash:
-                    print("previous hash problem")
+                    print("previous token hash problem")
                     return False
                 previous_hash = token.hash
             return True
-    
+
     def transaction(self, id, key):
-        previous_coin = self.user_chain[-1]
+        previous_coin = self.users.user_chain[-1]
         index = previous_coin.index + 1
         timestamp = date.datetime.now()
         for user in self.users.user_chain:
@@ -374,22 +382,22 @@ class TBlockchain:
                 name = user.name
                 data = user.data
                 break
-        
+
         #decrypting the block data
         coin_data = base64.b64decode(data)
         coin_data = eval(AES.decrypt(coin_data, key))
-        self.validate_chain()   
-        token = TCoin(index, timestamp, previous_coin.hash,tokens=[], name=name, data=data)
+        self.validate_Tchain()
+        token = TCoin(index, timestamp, previous_coin.hash, name=name, data=data)
         token.mine_block(self.difficulty)
         encrypted_dict = AES.encrypt(json.dumps(token.data), key)
         encrypted_dict = base64.b64encode(encrypted_dict).decode()
-        token.data = eval(encrypted_dict)
+        token.data = encrypted_dict
         self.Tchain.append(token)
-        if self.validate_chain():
+        if self.validate_Tchain():
             coin_dict = token.to_dict()
 
         return coin_dict
-    
+
     def acknowledge(self, token, key):
         list(self.current_user.tokens).append(token)
         self.current_user.tokens - str(self.current_user.tokens)
@@ -398,6 +406,9 @@ class TBlockchain:
         self.users.update_chain(key)
 
 
+
 if __name__ == "__main__":
     wallet = Wallet()
-    wallet.add_user("Agnij", "emp", {"Phone": "8583848726"}, "duttalakssoo0dr2")
+    wallet.add_user("Agnij", "emp", {"phone":"8583848726"}, "duttalakssoo0dr2")
+    # tchain = TBlockchain()
+    # tchain.transaction("NWM-525", "duttalakssoo0dr2")

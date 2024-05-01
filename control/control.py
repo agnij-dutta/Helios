@@ -63,8 +63,8 @@ def input_data():
     return render_template('index.html')
 
 def push_data():
-    name, key, id, rank = session['values']
-    Uchain.add_user(name=name, id=id, data=session['data'], rank=rank, key=key)
+    name, key, rank = session['values']
+    session['id'] = Uchain.add_user(name=name, data=session['data'], rank=rank, key=key)
 
 @app.route('/add_records', methods=['GET', 'POST'])
 def add():
@@ -77,10 +77,15 @@ def add():
 
 @app.route('/display')
 def display():
-    name, key, id, rank = session['values']
-    data = session['data']
-    output = {'name':name, 'id':id, 'rank':rank}
-    output.update(data)
+    # name, key, rank = session['values']
+    # data = session['data']
+    # output = {'name':name, 'rank':rank}
+    # output.update(data)
+    for user in Uchain.user_chain():
+        if user.id == session['id']:
+            break
+
+    output = user.to_dict()
     return render_template('report.html', output=output, redirect_url='/')
 
 @app.route('/show_data')
