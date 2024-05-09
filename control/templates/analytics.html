@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Helios-Control</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Geo&display=swap">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Sarpanch&display=swap">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+    <style>
+        .form-container {
+            opacity: 0.9;
+        margin-top: 50px;
+        background-color: rgb(41, 41, 43);
+        color: aliceblue;
+        font-family: 'Sarpanch';
+        text-align: center;
+        margin: auto;
+        width: 70%;
+        padding: 10px;
+        }
+        .form-row {
+            margin-bottom: 10px;
+        }
+        .add-field, .remove-field {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body style="background-image: url('static/bg.png');">
+    <header class="header">
+        <div style="display: flex; justify-content: space-between; align-items: center; ">
+            <h1 style="font-family: 'Geo'; color: white; margin: auto; text-align: center;">HELIOS</h1>
+        </div>
+        <div>
+            <!-- Placeholder for your logo -->
+            <img src="static/logo.png" alt="Logo" style="width: 100px; height: 100px;">
+        </div>
+        <div class="menu-content">
+            <!-- Hyperlinks to other pages -->
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/how_to_use">How To Use</a>
+            <a href="/credits">Credits</a>
+            <a href="/license">License</a>
+            <a href="/analytics">Analytics</a>
+        </div>
+
+    </header>
+    <!--div class="graphics">
+        <h1 style="font-size: 48px; color: aliceblue;">Unselphish</h1>
+        <p style="font-size: 24px; color: #666;">Tagline</p>
+    </div-->
+    <div class="gap"></div>
+    <div class="form-container">
+        <form id="keyValueForm" action="/show_analysis" method="post">
+            <div id="fieldsContainer">
+                <div class="form-row">
+                    <h3>ID</h3>
+                    <input type="text" name="id" placeholder="id" required>
+                    <input type="text" name="key" placeholder="key">
+                </div>
+                <input class="submitbutton" type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+
+    <div class="gap"></div>
+
+    <script>
+        function addField() {
+            var container = document.getElementById('fieldsContainer');
+            var newFieldGroup = document.createElement('div');
+            newFieldGroup.classList.add('form-row');
+            newFieldGroup.innerHTML = `
+                <input type="text" name="value[]" placeholder="Value" required>
+                <button type="button" class="remove-field" onclick="removeField(this)">- Remove Field</button>`;
+            container.appendChild(newFieldGroup);
+        }
+
+        function removeField(field) {
+            var container = document.getElementById('fieldsContainer');
+            container.removeChild(field.parentNode);
+        }
+    </script>
+</body>
+</html>

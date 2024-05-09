@@ -1,9 +1,9 @@
 from flask import Flask, request, render_template, redirect, abort, session
 import sys
 from os import path
-sys.path.append( path.dirname( path.dirname( path.abspath("C:/Users/Anutosh/Coding_projects/Startup_ideas/Helios/encryption/AES.py") ) ) )
+sys.path.append( path.dirname( path.dirname( path.abspath(r"C:/Users/Agnij/Coding_projects/Helios/encryption/AES.py") ) ) )
 import encryption.AES as aes
-sys.path.append( path.dirname( path.dirname( path.abspath("C:/Users/Anutosh/Coding_projects/Startup_ideas/Helios/server/server.py") ) ) )
+sys.path.append( path.dirname( path.dirname( path.abspath(r"C:/Users/Agnij/Coding_projects/Helios/server/server.py") ) ) )
 from server.server import ServerApp
 import base64
 from blockchain import Wallet
@@ -21,17 +21,26 @@ def start_server():
     global server
     server = ServerApp()
 
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    if 'login' in session:
+        # session['values'] = request.form.getlist('value[]')
+        return render_template('home.html')
+    else:
+        redirect('/login')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     session.clear()
     global code_thread
     code_thread = threading.Thread(target=start_server)
     code_thread.start()
+    return render_template('load.html', redirect_url="/scan_code", text="loading code")
     
 
 @app.route('/scan_code')
 def display():
-    return render_template('report copy.html', redirect_url="/auth")
+    return render_template('scan.html', redirect_url="/auth")
 
 @app.route('/auth')
 def auth():
@@ -47,20 +56,15 @@ def auth():
 
     if len(old_list) == len(user.tokens) - 1:
         session['login'] = True
-        return render_template('license.html', redirect_url='/')
+        return render_template('load.html', redirect_url='/', text="logging in")
 
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    if 'login' in session:
-        return render_template('leaderboard.html')
-    else:
-        redirect('/login')
+
 
 @app.route('/input_data', methods=['GET', 'POST'])
 def input_data():
     values = request.form.getlist('value[]')
     session['values'] = values
-    return render_template('index.html')
+    return render_template('input.html')
 
 def push_data():
     name, key, rank = session['values']
@@ -73,10 +77,10 @@ def add():
     data_dict = dict(zip(keys, values))  # Combine keys and values into a dictionary
     session['data'] = data_dict
     push_data()
-    return render_template('load.html', redirect_url='/display')
+    return render_template('load.html', redirect_url='/report', text="adding records")
 
-@app.route('/display')
-def display():
+@app.route('/report')
+def report():
     # name, key, rank = session['values']
     # data = session['data']
     # output = {'name':name, 'rank':rank}
@@ -86,20 +90,37 @@ def display():
             break
 
     output = user.to_dict()
-    return render_template('report.html', output=output, redirect_url='/')
+    return render_template('display.html', output=output, redirect_url='/')
 
 @app.route('/show_data')
 def show_data():
 
     id = request.form.get('id')
+    key = request.form.get('key')
+    
     Uchain.load_chain()
 
     for user in Uchain.user_chain():
         if user.id == id:
             break
-
     output = user.to_dict()
-    return render_template('report.html', output=output)
+
+    if len(key) > 0:
+        user.data = base64.b64decode(user.data)
+        user.data = eval(aes.decrypt(user.data, key))
+
+    output.update(user.data)
+    output.update(Uchain.get_analytics(user.id))
+
+
+    return render_template('data.html', output=output)
+
+
+@app.route('/analytics')
+def analytics():
+    return render_template('analytics.html')
+    
+
 
 if __name__ == "__main__":
     app.run(host = "0.0.0.0", debug=True)

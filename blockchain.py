@@ -13,7 +13,7 @@ import json
 import random
 import threading
 
-cred = credentials.Certificate(r"C:\Users\Anutosh\Coding_projects\Startup_ideas\Helios\helios-c9483-firebase-adminsdk-judse-e1d436f342.json")
+cred = credentials.Certificate(r"C:\Users\Agnij\Coding_projects\Startup_ideas\Helios\helios-c9483-firebase-adminsdk-judse-e1d436f342.json")
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://helios-c9483-default-rtdb.asia-southeast1.firebasedatabase.app'
 })
@@ -327,6 +327,29 @@ class Wallet:
         else:
             print('not done')
 
+    def get_analytics(self, id):
+        self.load_chain()
+        for user in self.user_chain:
+            if id == user.id:
+                break
+
+        tokens = eval(user.tokens)
+        grouped_timestamps = {}
+
+        for token in tokens:
+
+            # Parse timestamp string to datetime object
+            dt_obj = date.strptime(token.timestamp, "%Y-%m-%d %H:%M:%S")
+            # Extract date (without time) from datetime object
+            date_str = dt_obj.strftime("%Y-%m-%d")
+            # Add timestamp to the dictionary with date as key
+            if date_str in grouped_timestamps:
+                grouped_timestamps[date_str].append(token)
+            else:
+                grouped_timestamps[date_str] = [token]
+
+        return grouped_timestamps
+
 
 
 #Define the Token(check-in transaction) Blockchain class
@@ -351,7 +374,7 @@ class TBlockchain:
                 print('yes')
                 for token in eval(user.tokens):
                     Tchain.append(token)
-                # Tchain = sorted(Tchain, key=lambda b:b.index)
+                # Tchain = grouped(Tchain, key=lambda b:b.index)
                 self.Tchain = Tchain
                 return Tchain
             else:
@@ -396,7 +419,7 @@ class TBlockchain:
         if self.validate_Tchain():
             coin_dict = token.to_dict()
 
-        return coin_dict
+        return token
 
     def acknowledge(self, token, key):
         list(self.current_user.tokens).append(token)

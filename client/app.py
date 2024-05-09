@@ -1,3 +1,6 @@
+import os
+os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
+
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
@@ -49,7 +52,7 @@ class ClientApp(App):
         id_number = self.id_input.text
         password = self.password_input.text
         token = tchain.transaction(id_number, password)
-        response = self.send_message(self.port, f"authenticate, {id_number}, {password}, {token["timestamp"]}, {token["hash"]}")
+        response = self.send_message(self.port, f"authenticate, {id_number}, {password}, {token.timestamp}, {token.hash}")
         if response == True:
             tchain.acknowledge(token, password)
 
