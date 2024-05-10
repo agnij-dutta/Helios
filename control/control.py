@@ -27,7 +27,7 @@ def home():
         # session['values'] = request.form.getlist('value[]')
         return render_template('home.html')
     else:
-        redirect('/login')
+       return redirect('/login')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -46,7 +46,7 @@ def display():
 def auth():
     Uchain.load_chain()
 
-    for user in Uchain.user_chain():
+    for user in Uchain.user_chain:
         if user.id == server.records[0]:
             break
 
@@ -56,6 +56,7 @@ def auth():
 
     if len(old_list) == len(user.tokens) - 1:
         session['login'] = True
+        session['chain'] = Uchain.load_chain()
         return render_template('load.html', redirect_url='/', text="logging in")
 
 

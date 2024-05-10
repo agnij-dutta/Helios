@@ -1,18 +1,36 @@
-<MainScreen>:
+<QRScannerScreen>:
     BoxLayout:
-        orientation: 'vertical'
-        Label:
-            text: 'Welcome to Helios'
-        Button: 
-            text: 'Scan Code'
-            on_release: app.root.current = 'scanner'
-
-<ScannerScreen>:
-    BoxLayout:
-        orientation: 'vertical'
-        Camera: 
-            id: Camera
+        orientation: "vertical"
+        Camera:
+            id: camera
             resolution: (640, 480)
+            play: True
+        Button:
+            text: "Scan Code"
+            size_hint: (None, None)
+            size: (150, 50)
+            on_press: root.scan_qr()
+
+<LoginScreen>:
+    BoxLayout:
+        orientation: "vertical"
         Label:
-            text: 'Scan Code'
-            
+            id: qr_label
+            text: "QR Code Data:"
+            font_size: 20
+        TextInput:
+            id: id_input
+            hint_text: "Enter User ID"
+        TextInput:
+            id: password_input
+            hint_text: "Enter Password"
+            password: True
+        Button:
+            text: "Submit"
+            on_press: root.submit_data()
+
+<MyApp>:
+    QRScannerScreen:
+        name: "QRScanner"
+    LoginScreen:
+        name: "Login"
