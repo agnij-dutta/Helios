@@ -3,7 +3,7 @@ import threading
 import qrcode
 import sys
 from os import path
-sys.path.append( path.dirname( path.dirname( path.abspath("C:/Users/Agnij/Coding_projects/Helios/encryption/AES.py") ) ) )
+sys.path.append( path.dirname( path.dirname( path.abspath(r"../encryption/AES.py") ) ) )
 import encryption.AES as aes
 import base64
 import requests

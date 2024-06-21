@@ -1,9 +1,9 @@
 from flask import Flask, request, render_template, redirect, abort, session
 import sys
 from os import path
-sys.path.append( path.dirname( path.dirname( path.abspath(r"C:/Users/Agnij/Coding_projects/Helios/encryption/AES.py") ) ) )
+sys.path.append( path.dirname( path.dirname( path.abspath(r"../encryption/AES.py") ) ) )
 import encryption.AES as aes
-sys.path.append( path.dirname( path.dirname( path.abspath(r"C:/Users/Agnij/Coding_projects/Helios/server/server.py") ) ) )
+sys.path.append( path.dirname( path.dirname( path.abspath(r"../server/server.py") ) ) )
 from server.server import ServerApp
 import base64
 from blockchain import Wallet

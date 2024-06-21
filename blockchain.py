@@ -13,7 +13,7 @@ import json
 import random
 import threading
 
-cred = credentials.Certificate(r"C:\Users\Agnij\Coding_projects\Startup_ideas\Helios\helios-c9483-firebase-adminsdk-judse-e1d436f342.json")
+cred = credentials.Certificate(r"helios-c9483-firebase-adminsdk-judse-e1d436f342.json")
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://helios-c9483-default-rtdb.asia-southeast1.firebasedatabase.app'
 })
